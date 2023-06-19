@@ -9,4 +9,17 @@ const readFile = async () => {
     }
 };
 
-module.exports = { readFile };
+const getById = async (id) => {
+    try {
+        const allTalkers = await readFile();
+        const talkerSelect = allTalkers.find((talker) => talker.id === Number(id));
+        return talkerSelect;
+    } catch (error) {
+        return null;
+    }
+};
+
+module.exports = { 
+    readFile,
+    getById,
+};
