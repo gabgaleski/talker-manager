@@ -19,7 +19,20 @@ const getById = async (id) => {
     }
 };
 
+const postTalker = async (talker) => {
+    try {
+        const allTalkers = await readFile();
+        const newTalker = { ...talker, id: allTalkers.length + 1 };
+        allTalkers.push(newTalker);
+        await fs.writeFile('src/talker.json', JSON.stringify(allTalkers));
+        return newTalker;
+    } catch (error) {
+        return null;
+    }
+};
+
 module.exports = { 
     readFile,
     getById,
+    postTalker,
 };
