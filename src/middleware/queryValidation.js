@@ -8,4 +8,17 @@ const queryRateValidation = (req, res, next) => {
     next();
 };
 
-module.exports = queryRateValidation;
+const queryDateValidation = (req, res, next) => {
+    const { date } = req.query;
+    const regex = /^(0[1-9]|1[0-9]|2[0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
+    if (date && !regex.test(date)) {
+        return res.status(400)
+        .json({ message: 'O parâmetro "date" deve ter o formato "dd/mm/aaaa"' });
+    }
+    next();
+};
+
+module.exports = {
+    queryRateValidation,
+    queryDateValidation,
+};
