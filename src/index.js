@@ -23,13 +23,13 @@ app.get('/talker', async (_req, res) => {
   return res.status(200).json(talkers);
 });
 
-app.get('/talker/:id', async (req, res) => {
-  const { id } = req.params;
-  const talker = await readAndWriteFile.getById(id);
-  if (!talker) {
-return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
-}
-  return res.status(200).json(talker);
+app.get('/talker/search', tokenValidation, async (req, res) => {
+  const { q } = req.query;
+  const talkers = await readAndWriteFile.readFile();
+  if (!q) return res.status(200).json(talkers);
+  const talkersFiltered = talkers.filter((talker) => talker.name.includes(q));
+  if (!talkersFiltered) return res.status(200).json([]);
+  return res.status(200).json(talkersFiltered);
 });
 
 app.post('/talker', tokenValidation, 
@@ -38,6 +38,15 @@ talkValidation, dataValidation, rateValidation, async (req, res) => {
   const infos = req.body;
   const talker = await readAndWriteFile.postTalker(infos);
   return res.status(201).json(talker);
+});
+
+app.get('/talker/:id', async (req, res) => {
+  const { id } = req.params;
+  const talker = await readAndWriteFile.getById(id);
+  if (!talker) {
+return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+}
+  return res.status(200).json(talker);
 });
 
 app.put('/talker/:id', tokenValidation,
