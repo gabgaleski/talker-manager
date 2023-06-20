@@ -5,6 +5,7 @@ const loginValidation = require('./middleware/loginValidation');
 const tokenValidation = require('./middleware/tokenValidation');
 const { nameValidation, 
   talkValidation, dataValidation, rateValidation } = require('./middleware/talkerValidation');
+const queryValidation = require('./middleware/queryValidation');
 
 const app = express();
 app.use(express.json());
@@ -23,13 +24,19 @@ app.get('/talker', async (_req, res) => {
   return res.status(200).json(talkers);
 });
 
-app.get('/talker/search', tokenValidation, async (req, res) => {
-  const { q } = req.query;
-  const talkers = await readAndWriteFile.readFile();
-  if (!q) return res.status(200).json(talkers);
-  const talkersFiltered = talkers.filter((talker) => talker.name.includes(q));
-  if (!talkersFiltered) return res.status(200).json([]);
-  return res.status(200).json(talkersFiltered);
+app.get('/talker/search', tokenValidation, queryValidation, async (req, res) => {
+  const { q, rate } = req.query;
+  let talkers = await readAndWriteFile.readFile();
+  if (!q && !rate) return res.status(200).json(talkers);
+  if (q) {
+    const talkersFiltered = talkers.filter((talker) => talker.name.includes(q));
+    talkers = talkersFiltered;
+  }
+  if (rate) {
+    const talkersFiltered = talkers.filter((talker) => talker.talk.rate === Number(rate));
+    talkers = talkersFiltered;
+  }
+  return res.status(200).json(talkers);
 });
 
 app.post('/talker', tokenValidation, 
