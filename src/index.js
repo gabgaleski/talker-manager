@@ -50,6 +50,12 @@ dataValidation, rateValidation, async (req, res) => {
   return res.status(200).json(talker);
 });
 
+app.delete('/talker/:id', tokenValidation, async (req, res) => {
+  const { id } = req.params;
+  await readAndWriteFile.deleteTalker(id);
+  res.status(204).json({});
+});
+
 app.post('/login', loginValidation, async (_req, res) => {
   const getToken = await generateToken();
   return res.status(200).json({ token: getToken });

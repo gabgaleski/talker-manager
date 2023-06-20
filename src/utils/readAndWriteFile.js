@@ -46,9 +46,20 @@ const updateTalker = async (id, infos) => {
     }
 };
 
+const deleteTalker = async (id) => {
+    try {
+      const allTalkers = await readFile();
+      const newList = allTalkers.filter((talker) => talker.id !== Number(id));
+      await fs.writeFile('src/talker.json', JSON.stringify(newList));
+    } catch (error) {
+        return null;
+    }
+};
+
 module.exports = { 
     readFile,
     getById,
     postTalker,
     updateTalker,
+    deleteTalker,
 };
