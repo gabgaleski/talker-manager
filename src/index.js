@@ -40,6 +40,16 @@ talkValidation, dataValidation, rateValidation, async (req, res) => {
   return res.status(201).json(talker);
 });
 
+app.put('/talker/:id', tokenValidation,
+nameValidation, talkValidation,
+dataValidation, rateValidation, async (req, res) => {
+  const { id } = req.params;
+  const infos = req.body;
+  const talker = await readAndWriteFile.updateTalker(id, infos);
+  if (!talker) return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+  return res.status(200).json(talker);
+});
+
 app.post('/login', loginValidation, async (_req, res) => {
   const getToken = await generateToken();
   return res.status(200).json({ token: getToken });

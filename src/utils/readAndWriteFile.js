@@ -31,8 +31,24 @@ const postTalker = async (talker) => {
     }
 };
 
+const updateTalker = async (id, infos) => {
+    try {
+        const allTalkers = await readFile();
+        const talkerSelect = allTalkers.find((talker) => talker.id === Number(id));
+        if (!talkerSelect) return null;
+        const talkerIndex = allTalkers.indexOf(talkerSelect);
+        const talkerUpdated = { ...talkerSelect, ...infos };
+        allTalkers[talkerIndex] = talkerUpdated;
+        await fs.writeFile('src/talker.json', JSON.stringify(allTalkers));
+        return talkerUpdated;
+    } catch (error) {
+        return null;
+    }
+};
+
 module.exports = { 
     readFile,
     getById,
     postTalker,
+    updateTalker,
 };
