@@ -5,7 +5,8 @@ const loginValidation = require('./middleware/loginValidation');
 const tokenValidation = require('./middleware/tokenValidation');
 const { nameValidation, 
   talkValidation, dataValidation,
-  rateValidation, rateChangeValidation, rateChangeContinueValidation } = require('./middleware/talkerValidation');
+  rateValidation, rateChangeValidation, 
+  rateChangeContinueValidation } = require('./middleware/talkerValidation');
 const { queryRateValidation, queryDateValidation } = require('./middleware/queryValidation');
 
 const app = express();
