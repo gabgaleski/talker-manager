@@ -54,9 +54,30 @@ const rateValidation = (req, res, next) => {
     next();
 };
 
+const rateChangeValidation = (req, res, next) => {
+    const { rate } = req.body;
+    const numRate = Number(rate);
+    if (!numRate && numRate !== 0) {
+    return res.status(400).json({ message: 'O campo "rate" é obrigatório' }); 
+    }
+    next();
+};
+
+const rateChangeContinueValidation = (req, res, next) => {
+    const { rate } = req.body;
+    const numRate = Number(rate);
+    if (numRate < 1 || numRate > 5 || !Number.isInteger(numRate)) {
+        return res.status(400)
+        .json({ message: 'O campo "rate" deve ser um número inteiro entre 1 e 5' });
+    }
+    next();
+};
+
 module.exports = {
     nameValidation,
     talkValidation,
     dataValidation,
     rateValidation,
+    rateChangeValidation,
+    rateChangeContinueValidation,
 };

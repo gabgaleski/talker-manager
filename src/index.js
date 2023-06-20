@@ -4,7 +4,8 @@ const generateToken = require('./utils/generateToken');
 const loginValidation = require('./middleware/loginValidation');
 const tokenValidation = require('./middleware/tokenValidation');
 const { nameValidation, 
-  talkValidation, dataValidation, rateValidation } = require('./middleware/talkerValidation');
+  talkValidation, dataValidation,
+  rateValidation, rateChangeValidation, rateChangeContinueValidation } = require('./middleware/talkerValidation');
 const { queryRateValidation, queryDateValidation } = require('./middleware/queryValidation');
 
 const app = express();
@@ -22,6 +23,14 @@ app.get('/talker', async (_req, res) => {
   const talkers = await readAndWriteFile.readFile();
   if (!talkers) return res.status(200).json([]);
   return res.status(200).json(talkers);
+});
+
+app.patch('/talker/rate/:id', tokenValidation, rateChangeValidation,
+rateChangeContinueValidation, async (req, res) => {
+  const { id } = req.params;
+  const { rate } = req.body;
+  const talker = await readAndWriteFile.updateRate(id, rate);
+  return res.status(204).json(talker);
 });
 
 app.get('/talker/search', tokenValidation, 
