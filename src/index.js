@@ -8,6 +8,8 @@ const { nameValidation,
   rateValidation, rateChangeValidation, 
   rateChangeContinueValidation } = require('./middleware/talkerValidation');
 const { queryRateValidation, queryDateValidation } = require('./middleware/queryValidation');
+const talkersDB = require('./talkersDB');
+const connection = require('./connection');
 
 const app = express();
 app.use(express.json());
@@ -18,6 +20,11 @@ const PORT = process.env.PORT || '3001';
 // não remova esse endpoint, e para o avaliador funcionar
 app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
+});
+
+app.get('/talker/db', async (_req, res) => {
+  const result = await talkersDB.getAll();
+  return res.status(200).json(result);
 });
 
 app.get('/talker', async (_req, res) => {
@@ -91,6 +98,7 @@ app.post('/login', loginValidation, async (_req, res) => {
   return res.status(200).json({ token: getToken });
 });
 
-app.listen(PORT, () => {
-  console.log('Online');
+app.listen(PORT, async () => {
+  const [result] = await connection.execute('SELECT 1');
+  if (result) console.log('Online');
 });
